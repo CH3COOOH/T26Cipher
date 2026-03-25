@@ -133,3 +133,14 @@ The page is intentionally minimal to keep usage straightforward.
 ## 📜 License
 
 MIT License.
+
+## 🔗 Relationship to the Vigenère Cipher
+
+T‑26 Cipher is conceptually similar to the classic **Vigenère cipher**, but with a few important differences:
+
+- **Both** use a *key‑driven sequence of shifts* to transform each character.
+- **Both** apply the shifts cyclically across the plaintext.
+- **Both** are reversible, symmetric substitution ciphers.
+
+However, T‑26 replaces the traditional A–Z alphabet with a **custom 26‑character wheel**, and the shift values are derived from the **index of each key character within this wheel**, rather than from alphabetical positions.  
+This makes T‑26 effectively a **“custom‑alphabet variant of the Vigenère cipher”**, preserving the same conceptual structure while allowing more flexible character mapping.
