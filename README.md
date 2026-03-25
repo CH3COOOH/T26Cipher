@@ -134,6 +134,8 @@ The page is intentionally minimal to keep usage straightforward.
 
 MIT License.
 
+---
+
 ## 🔗 Relationship to the Vigenère Cipher
 
 T‑26 Cipher is conceptually similar to the classic **Vigenère cipher**, but with a few important differences:
