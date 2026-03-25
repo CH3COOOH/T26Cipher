@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>T-26 Cipher</title>
+<style>
+  body, html {
+    height: 100%;
+    margin: 8px;
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+    font-family: sans-serif;
+    font-size: 14px;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+  .row label {
+    width: 30px;
+    margin-right: 4px;
+    white-space: nowrap;
+  }
+  .row input[type="text"],
+  .row textarea {
+    flex: 1;
+	resize: vertical;
+  }
+  .row button {
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+  #text_article {
+    flex: 1;
+    margin-top: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    resize: none;
+    overflow: auto;
+  }
+</style>
+</head>
+<body>
+
+<textarea id="text_article" readonly></textarea>
+
+<hr style="border: none; border-top: 1px solid #ccc; margin: 20px 0;">
+
+<div class="row">
+  <label for="input_rule">KEY</label>
+  <input type="password" id="input_rule">
+</div>
+
+<div class="row">
+  <label for="input_text">TXT</label>
+  <textarea type="text" id="input_text" rows="5"></textarea>
+  <button type="button" onclick="start(0)">ENC</button>
+  <button type="button" onclick="start(1)">DEC</button>
+</div>
+
+<br>
+
+<script>
+  const charset = '0A1B2C3D4E5F6G7H8I9JKLMNOPQRSTUVWXYZ';
+
+  const create_rule = (text, charset) => {
+    let rule = [];
+    for (ch of text) {
+      let i = charset.indexOf(ch);
+      if (i == -1) {
+        console.log('** Bad character in text. Skip.');
+        continue;
+      }
+      rule.push(i);
+    }
+    return rule;
+  }
+
+  const encode26 = (plaintext, rule, charset) => {
+    const p = charset.length;
+    let i = 0;
+    let masked = '';
+    for (ch of plaintext) {
+      let offset = rule[i];
+      let b = charset.indexOf(ch);
+      if (b >= 0) {
+        masked += charset[(b + offset) % p];
+        i++;
+      } else {
+        masked += ch;
+      }
+      if (i > rule.length - 1) {
+        i = 0;
+      }
+    }
+    return masked;
+  }
+
+  const decode26 = (maskedtext, rule, charset) => {
+    const p = charset.length;
+    let i = 0;
+    let plain = '';
+    for (ch of maskedtext) {
+      let offset = rule[i];
+      let b = charset.indexOf(ch);
+      if (b >= 0) {
+        plain += charset[Math.abs(b - offset % p + p) % p];
+        i++;
+      } else {
+        plain += ch;
+      }
+      if (i > rule.length - 1) {
+        i = 0;
+      }
+    }
+    return plain;
+  }
+  
+  const start = (action) => {
+    const rule = create_rule(document.getElementById('input_rule').value.trim().toUpperCase(), charset);
+    const text = document.getElementById('input_text').value.trim().toUpperCase();
+    let newtext = '';
+    if (action == 0) {
+      newtext = encode26(text, rule, charset);
+    } else {
+      newtext = decode26(text, rule, charset);
+    }
+    document.getElementById('text_article').value = newtext;
+  }
+</script>
+
+</body>
+</html>
