@@ -11,6 +11,7 @@ The algorithm is based on a **custom 26‑character wheel** and a **key‑driven
 - **Custom cipher algorithm** (T‑26)  
 - **Works offline** — open `index.html` and use immediately  
 - **Simple UI** — encrypt/decrypt with one click  
+- **Randomized spacing** — encrypted output can be split into random-length chunks with spaces inserted between them  
 - **Safe for casual use** — no key storage, no logs  
 
 ---
@@ -85,7 +86,19 @@ cipher[i] = charset[(index(plain[i]) + rule[i]) \bmod 26]
 
 ---
 
-### 4. Decryption (decode26)
+### 4. Randomized spacing (new)
+
+To make the encrypted text less visually obvious, the program can insert spaces at random positions after encoding:
+
+- The plaintext spaces are first replaced with a temporary marker `Z7X` so they can be restored later.
+- The encrypted output is then split into random-length chunks, with spaces inserted between chunks.
+- During decryption, those inserted spaces are removed before the shift logic runs, and the temporary marker is converted back into a normal space.
+
+This makes the ciphertext look more like natural text while remaining fully reversible.
+
+---
+
+### 5. Decryption (decode26)
 
 Reverse the shift:
 

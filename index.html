@@ -66,6 +66,22 @@
 
 <script>
   const charset = '0A1B2C3D4E5F6G7H8I9JKLMNOPQRSTUVWXYZ';
+  const FLAG_SPACE = 'Z7X';
+
+  function randomWordLength(min = 1, max = 10, shape = 4) {
+    let sum = 0;
+
+    for (let i = 0; i < shape; i++) {
+      sum += -Math.log(Math.random());
+    }
+    
+    const cap = shape * 3;
+    const normalized =
+      Math.min(sum, cap) / cap;
+
+    return min +
+      Math.floor(normalized * (max - min + 1));
+  }
 
   const create_rule = (text, charset) => {
     let rule = [];
@@ -84,6 +100,7 @@
     const p = charset.length;
     let i = 0;
     let masked = '';
+    plaintext = plaintext.replaceAll(' ', FLAG_SPACE);
     for (ch of plaintext) {
       let offset = rule[i];
       let b = charset.indexOf(ch);
@@ -97,13 +114,25 @@
         i = 0;
       }
     }
-    return masked;
+    let spaced = '';
+    let idx = 0;
+    while (idx < masked.length) {
+      const chunkLen = randomWordLength(1, 10, 4);
+      spaced += masked.slice(idx, idx + chunkLen);
+      idx += chunkLen;
+      if (idx < masked.length) {
+        spaced += ' ';
+      }
+    }
+    masked = spaced;
+    return spaced;
   }
 
   const decode26 = (maskedtext, rule, charset) => {
     const p = charset.length;
     let i = 0;
     let plain = '';
+    maskedtext = maskedtext.replaceAll(' ', '');
     for (ch of maskedtext) {
       let offset = rule[i];
       let b = charset.indexOf(ch);
@@ -117,7 +146,7 @@
         i = 0;
       }
     }
-    return plain;
+    return plain.replaceAll(FLAG_SPACE, ' ');
   }
   
   const start = (action) => {
